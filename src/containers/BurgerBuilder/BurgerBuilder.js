@@ -28,14 +28,14 @@ class BurgerBuilder extends Component {
     axios
       .get("https://my-burger-app-40660.firebaseio.com/ingredients.json")
       .then((response) => {
-        this.setState({ ingrediants: response.data });
+        // this.setState({ ingrediants: response.data });
         this.updatePurchaseState(response.data);
         let totalPrice = 4;
         totalPrice = Object.keys(response.data).reduce((acc,ingr)=>{
           acc += response.data[ingr] * INGREDIENT_PRICES[ingr]
           return acc
         },totalPrice)
-        this.setState({totalPrice:totalPrice})
+        this.setState({ ingrediants: response.data,totalPrice:totalPrice})
         console.log("ttttttttttttttttttttttttttttttttttttttttttttttttttt",totalPrice)
         
       })
@@ -101,31 +101,9 @@ class BurgerBuilder extends Component {
     this.setState({ purchasing: false });
   };
   contPurchaseHandler = () => {
-    // alert("success!!!!");
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "Max Schwarzmüller",
-        address: {
-          street: "Teststreet 1",
-          zipCode: "41351",
-          country: "Germany",
-        },
-        email: "test@test.com",
-      },
-      deliveryMethod: "fastest",
-    };
-    axios
-      .post("/orders.json", order)
-      .then((response) => {
-        this.setState({ purchasing: false, loading: false });
-        console.log(response);
-      })
-      .catch((error) => {
-        this.setState({ purchasing: false, loading: false });
-      });
+
+    this.props.history.push(`/check-out?salad=${this.state.ingrediants.salad}&meat=${this.state.ingrediants.meat}&cheese=${this.state.ingrediants.cheese}&bacon=${this.state.ingrediants.bacon}&price=${this.state.totalPrice}`)
+    
   };
   render() {
     const disableInfo = { ...this.state.ingrediants };
