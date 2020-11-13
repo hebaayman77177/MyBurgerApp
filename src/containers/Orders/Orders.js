@@ -23,8 +23,7 @@ class Orders extends Component {
       return (
         <Order
           key={orderKey}
-          customer={this.state.orders[orderKey].customer}
-          deliveryMethod={this.state.orders[orderKey].deliveryMethod}
+          order={this.state.orders[orderKey].order}
           ingredients={this.state.orders[orderKey].ingredients}
           price={this.state.orders[orderKey].price}
         />
