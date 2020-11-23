@@ -1,4 +1,4 @@
-import * as actionTypes from "./actions";
+import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
   ingrediants: { salad: 0, cheese: 0, meat: 0, bacon: 0 },
@@ -13,15 +13,19 @@ const INGREDIENT_PRICES = {
   bacon: 0.4,
 };
 
-const updatePurchaseState = (state) => {
+const updatePurchaseState = (state,ingrediants=null) => {
+  let usedIngrediants = {...state.ingrediants}
+  if(ingrediants!==null){
+    usedIngrediants=ingrediants
+  }
   let totalPrice = 4;
-  totalPrice = Object.keys(state.ingrediants).reduce((acc, ingr) => {
-    acc += state.ingrediants[ingr] * INGREDIENT_PRICES[ingr];
+  totalPrice = Object.keys(usedIngrediants).reduce((acc, ingr) => {
+    acc += usedIngrediants[ingr] * INGREDIENT_PRICES[ingr];
     return acc;
   }, totalPrice);
-  const updateQuantity = Object.keys(state.ingrediants)
+  const updateQuantity = Object.keys(usedIngrediants)
     .map((typ) => {
-      return state.ingrediants[typ];
+      return usedIngrediants[typ];
     })
     .reduce((sum, el) => {
       return sum + el;
@@ -32,10 +36,11 @@ const updatePurchaseState = (state) => {
   } else {
     purchaseable = false;
   }
+
   const updatedState = {
     ...state,
     purchaseable: purchaseable,
-    ingrediants: state.ingrediants,
+    ingrediants:ingrediants,
     totalPrice: totalPrice,
   };
   return updatedState;
@@ -96,7 +101,7 @@ const removeIngredientHandler = (state, type) => {
 const reducer = function (state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPDATE_PURCHASE_STATE:
-      return updatePurchaseState(state);
+      return updatePurchaseState(state, action.ingrediants);
     case actionTypes.ADD_INGREDIANT_HANDLER:
       return addIngredientHandler(state, action.ingrediant);
     case actionTypes.REMOVE_INGREDIANT_HANDLER:

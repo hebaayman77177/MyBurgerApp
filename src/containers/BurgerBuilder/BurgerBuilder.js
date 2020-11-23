@@ -9,22 +9,24 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/WithErrorHandler/WithErrorHandler";
-import * as actionTypes from "../../reducers/actions"
+import * as burgerBuiderCreators from "../../store/actions/burgerBuider"
 
 class BurgerBuilder extends Component {
+
   state = {
     purchasing: false,
     loading: false,
   };
 
   componentDidMount() {
-    // axios
-    //   .get("https://my-burger-app-40660.firebaseio.com/ingredients.json")
-    //   .then((response) => {
-    //     this.props.updatePurchaseState();
-    //   })
-    //   .catch((err) => {});
-    this.props.updatePurchaseState();
+    axios
+      .get("https://my-burger-app-40660.firebaseio.com/ingredients.json")
+      .then((response) => {
+        this.props.updatePurchaseState(response.data)
+      })
+      .catch((err) => {
+        this.props.updatePurchaseState()
+      });
   }
 
   
@@ -124,18 +126,17 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    ingrediants: state.ingrediants,
-    totalPrice: state.totalPrice,
-    purchaseable:state.purchaseable
+    ingrediants: state.burger.ingrediants,
+    totalPrice: state.burger.totalPrice,
+    purchaseable:state.burger.purchaseable
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updatePurchaseState: () => dispatch({ type: actionTypes.UPDATE_PURCHASE_STATE }),
-    addIngredientHandler: (type) => dispatch({ type: actionTypes.ADD_INGREDIANT_HANDLER,ingrediant: type}),
-    removeIngredientHandler: (type) => dispatch({ type: actionTypes.REMOVE_INGREDIANT_HANDLER,ingrediant: type}),
-
+    updatePurchaseState: (ingrediants) => dispatch(burgerBuiderCreators.updatePurchaseState(ingrediants)),
+    addIngredientHandler: (type) => dispatch(burgerBuiderCreators.addIngredientHandler(type)),
+    removeIngredientHandler: (type) => dispatch(burgerBuiderCreators.removeIngredientHandler(type))
   };
 };
 

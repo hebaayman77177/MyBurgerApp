@@ -26,7 +26,7 @@ class CheckOutSummary extends Component{
 
 const mapStateToProps = (state) => {
   return {
-    ingrediants: state.ingrediants,
+    ingrediants: state.burger.ingrediants,
   };
 };
 
